@@ -12,10 +12,13 @@ logger = logging.getLogger(__name__)
         retry_state.outcome.exception()
     )
 )
-def fetch_problems(zapi) -> List[Dict]:
+def fetch_problems(zapi, hostids: List[str] = None) -> List[Dict]:
     # Fetch problems (read-only). We rely on the public endpoint; adjust fields as needed.
-    return zapi.problem.get(
-        output=["eventid", "name", "clock", "acknowledged", "severity"],
-        sortfield="clock",
-        sortorder="DESC",
-    )
+    params = {
+        "output": ["eventid", "name", "clock", "acknowledged", "severity"],
+        "sortfield": "clock",
+        "sortorder": "DESC",
+    }
+    if hostids:
+        params["hostids"] = hostids
+    return zapi.problem.get(**params)

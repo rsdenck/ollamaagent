@@ -29,12 +29,12 @@ class ZabbixCollector:
         logger.info("Iniciando conexão com Zabbix em %s", self.url)
         # Fallback de inicialização por diferentes assinaturas de versão da pyzabbix
         try:
-            zapi = ZabbixAPI(server=self.url, timeout=10)
+            zapi = ZabbixAPI(server=self.url, timeout=120)
             if self.user and self.password:
                 zapi.login(self.user, self.password)
             return zapi
         except TypeError:
-            zapi = ZabbixAPI(server=self.url, timeout=10)
+            zapi = ZabbixAPI(server=self.url, timeout=120)
             if self.user and self.password:
                 try:
                     zapi.login(self.user, self.password)
@@ -61,7 +61,7 @@ class ZabbixCollector:
             logger.error("Falha ao coletar hosts do Zabbix após retrys: %s", e)
             hosts = []
         
-        hostids = [str(h.get("hostid")) for h in hosts if h.get("hostid") is not None]
+        hostids = [str(h.get("hostid")) for h in hosts if h.get("hostid") is not None][:50]
         
         metrics = []
         if hostids:
@@ -83,21 +83,6 @@ class ZabbixCollector:
             "metrics": metrics,
             "problems": problems
         }
-        
-        hostids = [str(h.get("hostid")) for h in hosts if h.get("hostid") is not None]
-        
-        logger.info("Coletando métricas para %d hosts...", len(hostids))
-        metrics = fetch_metrics(self.zapi, hostids)
-        
-        logger.info("Coletando problems (evetid/alerts)...")
-        problems = fetch_problems(self.zapi)
-
-        return {
-            "hosts": hosts,
-            "metrics": metrics,
-            "problems": problems
-        }
-
 
 class OllamaAnalyzerApp:
     """Classe de Orquestração Principal (Application Layer)."""

@@ -1,0 +1,21 @@
+{
+  "name": "warzem",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@nuxt/ui": "^2.18.2",
+    "nuxt": "^3.13.0",
+    "vue": "^3.5.0",
+    "vue-router": "^4.0.0"
+  },
+  "devDependencies": {
+    "@iconify-json/heroicons": "^1.1.0"
+  }
+}
