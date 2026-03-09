@@ -3,6 +3,10 @@ from __future__ import annotations
 import json
 import time
 from typing import List, Dict, Optional
+from tenacity import retry, stop_after_attempt, wait_fixed
+import logging
+
+logger = logging.getLogger(__name__)
 
 try:
     # Preferred path: Ollama Python client
@@ -77,6 +81,14 @@ class OllamaClient:
         msgs.append({"role": "user", "content": user_input})
         return msgs
 
+    @retry(
+        stop=stop_after_attempt(3),
+        wait=wait_fixed(2),
+        before_sleep=lambda retry_state: logger.warning(
+            "Falha ao conversar com Ollama: %s. Tentando novamente...", 
+            retry_state.outcome.exception()
+        )
+    )
     def chat(self, user_input: str) -> str:
         messages = self._build_messages(user_input)
 

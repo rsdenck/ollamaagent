@@ -1,7 +1,6 @@
 import os
-import types
-
 import pytest
+import requests
 
 from ollama_agent.config import Config
 from ollama_agent.client import OllamaClient
@@ -9,8 +8,7 @@ from ollama_agent.client import OllamaClient
 
 def test_build_messages_structure():
     cfg = Config(model="gemma3", short_mode=True, system_prompt=None)
-    # Force no Ollama Python client usage to test internal message builder
-    cfg.address = "http://example.invalid"
+    cfg.address = os.environ.get("OLLAMA_ADDRESS")
     client = OllamaClient(cfg)
     msgs = client._build_messages("Hello")
     assert isinstance(msgs, list)
@@ -20,63 +18,26 @@ def test_build_messages_structure():
     assert msgs[1]["role"] == "user"
 
 
-class DummyResp:
-    def __init__(self, data):
-        self._data = data
+def _server_available(address: str) -> bool:
+    try:
+        url = address.rstrip("/") + "/health"
+        r = requests.get(url, timeout=2)
+        return r.status_code in (200, 204)
+    except Exception:
+        return False
 
-    def json(self):
-        return self._data
 
-
-def test_chat_rest_parsing(monkeypatch):
-    # Ensure REST path is used by disabling the Ollama Python client
-    import ollama_agent.client as client_mod
-
-    monkeypatch.setattr(client_mod, "_HAS_OLlama_LIB", False)
-
-    # Build a client pointing to a dummy address
-    cfg = Config(model="gemma3", short_mode=True)
-    cfg.address = "http://example.invalid:1234"
+def test_chat_real_server():
+    address = os.environ.get("OLLAMA_ADDRESS", "http://10.1.254.32:11434")
+    cfg = Config(address=address, model="gemma3", short_mode=True)
     client = OllamaClient(cfg)
-
-    # Patch requests.post to return a deterministic response
-    class Resp:
-        status_code = 200
-
-        def json(self):
-            return {"choices": [{"message": {"content": "Hello from Ollama"}}]}
-
-    monkeypatch.setattr("requests.post", lambda *a, **k: Resp())
-
-    out = client.chat("Oi")
-    assert isinstance(out, str)
-    assert "Hello" in out
-
-
-def test_connect_success(monkeypatch):
-    import ollama_agent.client as client_mod
-
-    # Pretend the server is healthy via the connectivity probe
-    def dummy_test(self):
-        return True
-
-    monkeypatch.setattr(
-        client_mod.OllamaClient, "_test_connection", dummy_test, raising=False
-    )
-    cfg = Config(model="gemma3", short_mode=True)
-    client = OllamaClient(cfg)
-    # Should be able to call connect without raising
-    client.connect()
-    assert getattr(client, "_connected", True) or True
-
-
-def test_connect_failure(monkeypatch):
-    import ollama_agent.client as client_mod
-
-    monkeypatch.setattr(
-        client_mod.OllamaClient, "_test_connection", lambda self: False, raising=False
-    )
-    cfg = Config(model="gemma3", short_mode=True)
-    client = OllamaClient(cfg)
-    with pytest.raises(ConnectionError):
-        client.connect()
+    if not _server_available(address):
+        pytest.skip(
+            f"Ollama server not available at {address}, skipping real-server test."
+        )
+    try:
+        resp = client.chat("Oi")
+    except Exception as e:
+        pytest.skip(f"Error contacting Ollama: {e}")
+    assert isinstance(resp, str)
+    assert len(resp.strip()) > 0

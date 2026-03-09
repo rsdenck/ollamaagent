@@ -1,0 +1,5 @@
+ollama_agent
+scripts
+tests
+tools
+zabbix_ai_analyzer
