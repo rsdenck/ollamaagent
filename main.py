@@ -126,7 +126,7 @@ class OllamaAnalyzerApp:
             
             # 2. Inicializa IA e Analyzer
             logger.info("Conectando ao Ollama em %s", self.ollama_address)
-            ai_client = OllamaClient(address=self.ollama_address, model="gemma3", short_mode=True)
+            ai_client = OllamaClient(address=self.ollama_address, model="llama3:latest", short_mode=True)
             
             analyzer = Analyzer(zabbix_data, ai_client)
             

@@ -34,10 +34,11 @@ class OllamaClient:
                 {"role": "system", "content": "You are a concise Zabbix AI Copilot."},
                 {"role": "user", "content": prompt},
             ],
+            "stream": False
         }
-        url = f"{self.address}/v1/chat"
+        url = f"{self.address}/api/chat"
         logger.debug("Enviando req para Ollama em %s", url)
-        r = requests.post(url, json=payload, timeout=20)
+        r = requests.post(url, json=payload, timeout=60)
         r.raise_for_status()
         data_out = r.json()
         logger.debug(
@@ -47,6 +48,11 @@ class OllamaClient:
         # Try robust extraction
         def _extract(d):
             if isinstance(d, dict):
+                # Formato nativo do Ollama (/api/chat)
+                msg = d.get("message")
+                if isinstance(msg, dict):
+                    return msg.get("content")
+                # Formato OpenAI Compatible (/v1/chat/completions)
                 ch = d.get("choices")
                 if isinstance(ch, list) and ch:
                     m = ch[0].get("message")

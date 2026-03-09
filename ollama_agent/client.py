@@ -114,13 +114,13 @@ class OllamaClient:
                 pass
 
         # Fallback: direct REST API call to Ollama server with endpoint fallbacks
-        payload = {"model": self.model, "messages": messages}
+        payload = {"model": self.model, "messages": messages, "stream": False}
         if self.temperature is not None:
             payload["temperature"] = self.temperature
         if self.max_tokens is not None:
             payload["max_tokens"] = self.max_tokens
 
-        endpoints = ["/v1/chat", "/v1/chat/"]
+        endpoints = ["/api/chat", "/v1/chat/completions"]
         last_error: Optional[Exception] = None
         for ep in endpoints:
             url = f"{self.address}{ep}"
@@ -135,6 +135,13 @@ class OllamaClient:
                 # Try to extract content robustly
                 def _content_from(d) -> Optional[str]:
                     if isinstance(d, dict):
+                        # Native
+                        m_native = d.get("message")
+                        if isinstance(m_native, dict):
+                            txt = m_native.get("content")
+                            if isinstance(txt, str):
+                                return txt
+                        # OpenAI format
                         ch = d.get("choices")
                         if isinstance(ch, list) and ch:
                             m = (
