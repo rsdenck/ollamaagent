@@ -132,11 +132,19 @@ class OllamaAnalyzerApp:
             
             # 3. Executa processamento estruturado (Business Domain)
             logger.info("Executando análises IA (Health, Security, Capacity)...")
-            report = {
-                "health": analyzer.analyze_health(),
-                "security": analyzer.analyze_security(),
-                "capacity": analyzer.analyze_capacity(),
-            }
+            report = {}
+            for ctx in ["health", "security", "capacity"]:
+                try:
+                    logger.info("Analisando contexto: %s...", ctx)
+                    if ctx == "health":
+                        report[ctx] = analyzer.analyze_health()
+                    elif ctx == "security":
+                        report[ctx] = analyzer.analyze_security()
+                    elif ctx == "capacity":
+                        report[ctx] = analyzer.analyze_capacity()
+                except Exception as e:
+                    logger.error("Falha ao gerar relatório de %s devido a erros na IA: %s", ctx, e)
+                    report[ctx] = f"Análise de {ctx} indisponível no momento."
             
             logger.info("Relatório gerado com sucesso.")
             print(json.dumps(report, indent=2))
