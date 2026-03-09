@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ollama_agent"
+version = "0.1.0"
+description = "Configurável OllamaAgent em Python para consumo rápido do Ollama"
+authors = [ { name = "OllamaAgent", email = "dev@example.com" } ]
+dependencies = ["requests>=2.28.0"]
+
+[tool.setuptools.packages.find]
+where = ["."]
