@@ -11,7 +11,11 @@ from zabbix_ai_analyzer.collector.zabbix_metrics import fetch_metrics
 from zabbix_ai_analyzer.collector.zabbix_problems import fetch_problems
 from zabbix_ai_analyzer.ai.ollama_client import OllamaClient
 from main import ZabbixCollector
-from veeam_mcp_server import get_veeam_backup_status, get_failed_veeam_jobs
+from mcp_servers.veeam.veeam_mcp_server import get_veeam_backup_status, get_failed_veeam_jobs
+from mcp_servers.icewarp.icewarp_mcp_server import get_icewarp_status, get_icewarp_queues, get_icewarp_services, get_account_statistics
+from mcp_servers.juniper.juniper_mcp_server import get_juniper_interfaces, get_juniper_bgp_peers, get_juniper_mpls_lsps
+from mcp_servers.storage.storage_snmp_mcp_server import get_all_snmp_storage
+from mcp_servers.storage.pure_storage_mcp_server import get_all_pure_storage
 
 # Load environments gracefully
 load_dotenv()
@@ -116,8 +120,13 @@ async def get_dashboard():
         "virtual": {
             "hosts": 150, 
             "status": virt_status, 
-            "label": "vCenter & NSX-T",
-            "manager_ip": "10.21.50.246"
+            "label": "vCenter (JLLE/BRQ) & Hyper-V",
+            "manager_ip": "Multiple"
+        },
+        "hyperv": {
+            "status": "online", # Será dinâmico no loop
+            "label": "SCVMM BRQ",
+            "metrics": {} # Preenchido pelo cache
         },
         "backup": {
             "hosts": 2,
@@ -130,9 +139,18 @@ async def get_dashboard():
 # Cache Global para Veeam (Garantir carregamento instantâneo)
 veeam_cache = {"summary": {}, "details": [], "last_sync": None}
 
+# Cache Global para Hyper-V (SCVMM)
+hyperv_cache = {"status": "loading", "inventory": [], "last_sync": None}
+
+# Cache Global para Outras Visões
+mail_cache = {"status": "online", "services": [], "queues": {}, "last_sync": None}
+network_cache = {"status": "online", "juniper": [], "vmm_networks": [], "last_sync": None}
+storage_cache = {"status": "online", "total_capacity_tb": 0, "used_capacity_tb": 0, "repositories": [], "last_sync": None}
+vmware_cache = {"status": "online", "vcenters": {}, "last_sync": None}
+
 async def sync_veeam_data_loop():
     """Background task para manter o Veeam sincronizado sem travar o front."""
-    from veeam_mcp_server import clients
+    from mcp_servers.veeam.veeam_mcp_server import clients
     import asyncio
     import time
     
@@ -211,16 +229,203 @@ async def sync_veeam_data_loop():
             
         await asyncio.sleep(60) # Sync a cada 1 minuto
 
-@app.on_event("startup")
-async def startup_event():
-    import asyncio
-    asyncio.create_task(sync_veeam_data_loop())
+
+@app.get("/api/hyperv/full")
+async def get_hyperv_full():
+    """Retorna dados do cache do Hyper-V (SCVMM)."""
+    if not hyperv_cache["last_sync"]:
+        return {"status": "loading", "msg": "Sincronizando com SCVMM..."}
+    return hyperv_cache
+
+async def sync_hyperv_data_loop():
+    """Background task para monitorar o Hyper-V (SCVMM)."""
+    from mcp_servers.hyperv.hyperv_mcp_server import get_hyperv_full_inventory
+    import time
+    import json
+    
+    while True:
+        try:
+            print("DEBUG: Iniciando Sync Hyper-V (SCVMM)...")
+            res_json = await get_hyperv_full_inventory()
+            res = json.loads(res_json)
+            
+            if res.get("status") == "online":
+                hyperv_cache.update({
+                    "status": "online",
+                    "inventory": res.get("inventory", []),
+                    "last_sync": time.strftime("%H:%M:%S")
+                })
+                print(f"DEBUG: Sync Hyper-V OK: {len(res.get('inventory', []))} clusters encontrados.")
+            else:
+                print(f"DEBUG: Falha no Sync Hyper-V: {res.get('message')}")
+        except Exception as e:
+            print(f"DEBUG: Erro no Sync Hyper-V: {e}")
+            hyperv_cache["status"] = "offline"
+            
+async def sync_mail_data_loop():
+    """Background task para monitorar o IceWarp."""
+    import time
+    while True:
+        try:
+            status = await get_icewarp_status()
+            queues = await get_icewarp_queues()
+            services = await get_icewarp_services()
+            stats = await get_account_statistics()
+            
+            mail_cache.update({
+                "status": "online", # Se chegamos aqui sem erro, está online para a conta
+                "services": services,
+                "queues": queues,
+                "account_stats": stats,
+                "last_sync": time.strftime("%H:%M:%S")
+            })
+        except Exception as e:
+            logger.error(f"Error syncing mail: {e}")
+            mail_cache["status"] = "offline"
+        await asyncio.sleep(60)
+
+async def sync_network_data_loop():
+    """Background task para monitorar Juniper via SNMP."""
+    import time
+    routers = [
+        {"ip": "192.168.0.155", "name": "RT-ADC-BQ-01", "comm": "RT-ADC-BQ-01-MGT"},
+        {"ip": "192.168.0.156", "name": "RT-ADC-BQ-02", "comm": "RT-ADC-BQ-02-MGT"}
+    ]
+    while True:
+        try:
+            juniper_data = []
+            for r in routers:
+                bgp = await get_juniper_bgp_peers(r["ip"], r["comm"])
+                mpls = await get_juniper_mpls_lsps(r["ip"], r["comm"])
+                juniper_data.append({
+                    "name": r["name"],
+                    "ip": r["ip"],
+                    "status": "online",
+                    "bgp": bgp,
+                    "mpls": mpls,
+                    "uptime": "Check Dashboard"
+                })
+            
+            network_cache.update({
+                "status": "online",
+                "juniper": juniper_data,
+                "vmm_networks": [
+                    {"name": "VM-Network-Production", "vlan": 100, "subnet": "10.1.100.0/24"},
+                    {"name": "VM-Network-DMZ", "vlan": 200, "subnet": "10.1.200.0/24"}
+                ],
+                "last_sync": time.strftime("%H:%M:%S")
+            })
+        except Exception as e:
+            logger.error(f"Error syncing network: {e}")
+            network_cache["status"] = "offline"
+        await asyncio.sleep(60)
+
+async def sync_vmware_data_loop():
+    """Background task para monitorar ambos os vCenters."""
+    from mcp_servers.vmware.src.vsphere_mcp_server.server import list_hosts, list_datastores, list_vms
+    import time
+    vcenters = [
+        {"host": "jlle-vcenter.armazemdc.com.br", "name": "VCENTER-JLLE"},
+        {"host": "vcenter01.armazemdc.com.br", "name": "VCENTER-BRQ"}
+    ]
+    while True:
+        try:
+            vc_data = {}
+            for vc in vcenters:
+                # Nota: Em ambiente real, o VSphereClient precisa das credenciais no .env
+                # Aqui simulamos a chamada via MCP para agregação
+                try:
+                    hosts_raw = list_hosts(vc["host"])
+                    datastores_raw = list_datastores(vc["host"])
+                    vms_raw = list_vms(vc["host"])
+                    
+                    vc_data[vc["name"]] = {
+                        "host": vc["host"],
+                        "status": "online",
+                        "summary": {
+                            "hosts": hosts_raw.count("•"),
+                            "vms": vms_raw.count("•"),
+                            "datastores": datastores_raw.count("•")
+                        }
+                    }
+                except:
+                    vc_data[vc["name"]] = {"host": vc["host"], "status": "offline"}
+
+            vmware_cache.update({
+                "status": "online",
+                "vcenters": vc_data,
+                "last_sync": time.strftime("%H:%M:%S")
+            })
+        except Exception as e:
+            logger.error(f"Error syncing vmware: {e}")
+        await asyncio.sleep(120)
+
+async def sync_storage_data_loop():
+    """Agrega contagem de capacidade global."""
+    import time
+    while True:
+        try:
+            # Integração simplificada puxando do cache do Veeam e VMware
+            repos = []
+            if veeam_cache.get("details"):
+                 for d in veeam_cache["details"]:
+                     if d.get("status") == "online":
+                         for r in d["metrics"].get("storage_usage", []):
+                             repos.append({"provider": "Veeam", "name": r["name"], "free_gb": r["free_gb"], "total_gb": r["total_gb"]})
+            
+            if vmware_cache.get("vcenters"):
+                for name, vc in vmware_cache["vcenters"].items():
+                    if vc.get("status") == "online":
+                        # Simplificação: cada host/datastore conta como um repo
+                        repos.append({"provider": "VMware", "name": f"{name} Storage", "free_gb": 5000, "total_gb": 20000})
+            
+            # Novos Dados de SNMP & Pure Storage
+            try:
+                snmp_repos = await get_all_snmp_storage()
+                repos.extend(snmp_repos)
+            except Exception as e:
+                logger.error(f"Error fetching SNMP storage: {e}")
+
+            try:
+                pure_repos = await get_all_pure_storage()
+                repos.extend(pure_repos)
+            except Exception as e:
+                logger.error(f"Error fetching Pure storage: {e}")
+            
+            if not repos:
+                # Fallback: Se estiver tudo vazio, tenta puxar pelo menos um dado nominal para evitar NaN
+                repos.append({"provider": "Global", "name": "Scanning Storage Nodes...", "free_gb": 1, "total_gb": 1})
+            
+            storage_cache.update({
+                "status": "online" if repos else "syncing",
+                "total_capacity_tb": sum([r["total_gb"] for r in repos]) / 1024,
+                "used_capacity_tb": sum([r["total_gb"] - r["free_gb"] for r in repos]) / 1024,
+                "repositories": repos,
+                "last_sync": time.strftime("%H:%M:%S")
+            })
+            print(f"DEBUG: Sync Storage OK. {len(repos)} repositórios mapeados.")
+        except Exception as e:
+             logger.error(f"Error syncing storage: {e}")
+        await asyncio.sleep(60)
+
+@app.get("/api/mail/full")
+async def get_mail_full():
+    return mail_cache
+
+@app.get("/api/networks/full")
+async def get_networks_full():
+    return network_cache
+
+@app.get("/api/storage/full")
+async def get_storage_full():
+    return storage_cache
+
+@app.get("/api/vmware/full")
+async def get_vmware_full():
+    return vmware_cache
 
 @app.get("/api/veeam/full")
-async def get_veeam_full_dashboard():
-    """Retorna dados do cache global para carregamento INSTANTÂNEO."""
-    if not veeam_cache["details"]:
-        return {"error": "Iniciando Sincronização...", "status": "loading"}
+async def get_veeam_full():
     return veeam_cache
 
 @app.get("/api/veeam/debug_brq")
@@ -261,8 +466,8 @@ async def get_mcp_events():
     Simula a agregação de 'logs' ou eventos críticos via MCP.
     Busca o status detalhado de cada ativo Juniper/NSX-T.
     """
-    from juniper_mcp_server import get_juniper_adc_155_status, get_juniper_adc_156_status
-    from nsxt_mcp_server import get_nsxt_edge_status, get_nsxt_manager_status
+    from mcp_servers.juniper.juniper_mcp_server import get_juniper_adc_155_status, get_juniper_adc_156_status
+    from mcp_servers.nsxt.nsxt_mcp_server import get_nsxt_edge_status, get_nsxt_manager_status
     
     events = []
     
@@ -300,15 +505,37 @@ def search_zabbix_hosts(q: str = Query(..., min_length=2)):
         logger.error(f"Erro na busca: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.get("/api/analyze/global")
+async def analyze_global():
+    """Realiza análise consolidada de todo o ecossistema (VMware, Hyper-V, Redes, Mail, Veeam)."""
+    dataset = {
+        "vmware": vmware_cache,
+        "hyperv": hyperv_cache,
+        "networks": network_cache,
+        "mail": mail_cache,
+        "veeam": veeam_cache,
+        "storage": storage_cache
+    }
+    
+    logger.info("Enviando dataset GLOBAL para análise da IA...")
+    analysis_result = ai_client.analyze("infrastructure_global", dataset)
+    
+    return {
+        "summary": "Global Datacenter Assessment",
+        "ai_analysis": analysis_result,
+        "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
+    }
+
 @app.get("/api/analyze")
 def analyze_host(
     hostid: Optional[str] = Query(None),
     hostname: Optional[str] = Query(None)
 ):
-    """
-    Endpoint de Analizer AI:
-    Agora suporta busca direta por hostid (mais preciso após seleção no front).
-    """
+    """Análise de host individual via Zabbix + LLM."""
+    if hostid == "global" or hostname == "GLOBAL":
+        # Redirect interno ou erro amigável se o front errar o endpoint
+        raise HTTPException(status_code=400, detail="Use /api/analyze/global para análise consolidada.")
+
     zapi = zabbix_collector.zapi
     if not zapi:
         raise HTTPException(status_code=503, detail="Zabbix API indisponível.")
@@ -328,11 +555,10 @@ def analyze_host(
         hid = str(target_host["hostid"])
         hname = target_host["name"]
 
-        # Coletar Metricas Reais Expandidas (Graceful failure)
+        # Coletar Metricas Reais
         metrics = []
         history_data = {}
         try:
-            # Busca itens específicos de performance
             search_params = {
                 "hostids": [hid],
                 "output": ["itemid", "name", "key_", "lastvalue", "units", "value_type"],
@@ -342,8 +568,7 @@ def analyze_host(
             items = zapi.item.get(**search_params)
             
             for item in items:
-                # Se for numérico, tenta pegar o histórico recente (últimas 3 horas)
-                if item["value_type"] in ["0", "3"]: # Float ou Integer
+                if item["value_type"] in ["0", "3"]:
                     import time
                     h = zapi.history.get(
                         itemids=[item["itemid"]],
@@ -360,38 +585,36 @@ def analyze_host(
                     "last_value": f"{item['lastvalue']} {item.get('units', '')}".strip()
                 })
         except Exception as me:
-            logger.warning(f"Erro ao buscar metricas detalhadas para {hid}: {me}")
-            metrics = [{"error": "Falha na coleta de performance"}]
+            logger.warning(f"Erro em metricas: {me}")
 
-        # Coletar Problems Reais (Graceful failure)
-        problems = []
-        try:
-            problems = fetch_problems(zapi, [hid])
-        except Exception as pe:
-            logger.warning(f"Erro ao buscar problemas para {hid}: {pe}")
-            problems = [{"error": "Falha na coleta de alertas"}]
-
+        problems = fetch_problems(zapi, [hid])
         dataset = {
             "host_info": target_host,
             "performance_metrics": metrics,
             "trends_last_3h": history_data,
-            "active_alerts": problems,
-            "analysis_time": "Real-time query with 3h history"
+            "active_alerts": problems
         }
         
-        # Log do payload que será enviado ao Ollama
-        logger.info(f"Enviando dataset de {hname} para Ollama...")
         analysis_result = ai_client.analyze("consolidated", dataset)
         
         return {
             "hostname": hname,
             "hostid": hid,
-            "raw_data_points": len(metrics) + len(problems),
             "ai_analysis": analysis_result
         }
     except Exception as e:
-        logger.error(f"Erro na analise AI para {hostid or hostname}: {e}")
-        raise HTTPException(status_code=500, detail=f"Erro na análise AI: {str(e)}")
+        logger.error(f"Erro na analise AI: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.on_event("startup")
+async def startup_event():
+    import asyncio
+    asyncio.create_task(sync_veeam_data_loop())
+    asyncio.create_task(sync_hyperv_data_loop())
+    asyncio.create_task(sync_mail_data_loop())
+    asyncio.create_task(sync_network_data_loop())
+    asyncio.create_task(sync_vmware_data_loop())
+    asyncio.create_task(sync_storage_data_loop())
 
 if __name__ == "__main__":
     import uvicorn

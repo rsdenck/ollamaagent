@@ -7,216 +7,614 @@
       <div class="absolute -bottom-[10%] left-[20%] w-[50%] h-[40%] bg-purple-600/10 blur-[150px] rounded-full"></div>
     </div>
 
+    <!-- Top Floating Navigation (Aria Operations Style) -->
+    <nav class="fixed top-0 inset-x-0 z-50 flex justify-center py-4 pointer-events-none">
+      <div class="inline-flex p-1.5 bg-slate-900/80 backdrop-blur-3xl border border-slate-800/50 rounded-2xl shadow-2xl pointer-events-auto transition-all duration-500 hover:border-indigo-500/30 overflow-x-auto max-w-[95vw] custom-scrollbar">
+        <button 
+          @click="activeTab = 'vmware'"
+          :class="activeTab === 'vmware' ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/20 scale-105' : 'text-slate-400 hover:text-slate-200'"
+          class="px-5 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all duration-300 flex items-center gap-2 whitespace-nowrap"
+        >
+          <UIcon name="i-heroicons-rectangle-stack" class="w-4 h-4" />
+          VMware
+        </button>
+        <button 
+          @click="activeTab = 'hyperv'"
+          :class="activeTab === 'hyperv' ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20 scale-105' : 'text-slate-400 hover:text-slate-200'"
+          class="px-5 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all duration-300 flex items-center gap-2 whitespace-nowrap"
+        >
+          <UIcon name="i-heroicons-cpu-chip" class="w-4 h-4" />
+          Hyper-V
+        </button>
+        <button 
+          @click="activeTab = 'storage'"
+          :class="activeTab === 'storage' ? 'bg-amber-500 text-white shadow-lg shadow-amber-500/20 scale-105' : 'text-slate-400 hover:text-slate-200'"
+          class="px-5 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all duration-300 flex items-center gap-2 whitespace-nowrap"
+        >
+          <UIcon name="i-heroicons-circle-stack" class="w-4 h-4" />
+          Storage
+        </button>
+        <button 
+          @click="activeTab = 'networks'"
+          :class="activeTab === 'networks' ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20 scale-105' : 'text-slate-400 hover:text-slate-200'"
+          class="px-5 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all duration-300 flex items-center gap-2 whitespace-nowrap"
+        >
+          <UIcon name="i-heroicons-globe-alt" class="w-4 h-4" />
+          Redes
+        </button>
+        <button 
+          @click="activeTab = 'mail'"
+          :class="activeTab === 'mail' ? 'bg-red-500 text-white shadow-lg shadow-red-500/20 scale-105' : 'text-slate-400 hover:text-slate-200'"
+          class="px-5 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all duration-300 flex items-center gap-2 whitespace-nowrap"
+        >
+          <UIcon name="i-heroicons-envelope" class="w-4 h-4" />
+          Mail
+        </button>
+        <button 
+          @click="activeTab = 'veeam'"
+          :class="activeTab === 'veeam' ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/20 scale-105' : 'text-slate-400 hover:text-slate-200'"
+          class="px-5 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all duration-300 flex items-center gap-2 whitespace-nowrap"
+        >
+          <UIcon name="i-heroicons-shield-check" class="w-4 h-4" />
+          Veeam
+        </button>
+        <button 
+          @click="activeTab = 'ia'"
+          :class="activeTab === 'ia' ? 'bg-purple-600 text-white shadow-lg shadow-purple-600/20 scale-105' : 'text-slate-400 hover:text-slate-200'"
+          class="px-5 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all duration-300 flex items-center gap-2 whitespace-nowrap"
+        >
+          <UIcon name="i-heroicons-sparkles" class="w-4 h-4" />
+          SRE Analysis
+        </button>
+      </div>
+    </nav>
+
     <!-- Layout Container -->
-    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 pt-24 pb-12">
       
-      <!-- Header -->
-      <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12 animate-in fade-in slide-in-from-top-4 duration-700">
-        <div>
-          <div class="flex items-center gap-3 mb-1">
-            <div class="p-2 bg-indigo-500 rounded-xl shadow-lg shadow-indigo-500/20">
-              <UIcon name="i-heroicons-bolt" class="w-6 h-6 text-white" />
-            </div>
-            <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">
-              WARZEM<span class="text-indigo-500">.</span>
-            </h1>
+
+      <!-- VMware View (Enterprise Multi-vCenter) -->
+      <div v-if="activeTab === 'vmware'" class="animate-in fade-in zoom-in-95 duration-700">
+        <div class="mb-10 flex flex-col md:flex-row justify-between items-end gap-4">
+          <div>
+            <h2 class="text-3xl font-black text-white mb-2 italic">VMware Cloud Ecosystem</h2>
+            <p class="text-slate-500 font-bold uppercase tracking-widest text-[10px]">Consolidated vCenter & ESXi Infrastructure</p>
           </div>
-          <p class="text-slate-400 font-medium text-sm sm:text-base">Infra Intelligence & Automated SRE Analyzer</p>
-        </div>
-
-        <div class="flex items-center gap-4 w-full md:w-auto">
-          <div class="hidden md:flex flex-col items-end px-4 border-r border-slate-800">
-            <span class="text-[10px] uppercase tracking-widest text-slate-500 font-bold">System Status</span>
-            <div class="flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span class="text-sm font-semibold text-emerald-500">All Systems Operational</span>
-            </div>
+          <div class="flex items-center gap-3 bg-slate-900/60 p-2 rounded-2xl border border-slate-800/50">
+             <div class="px-4 py-2 bg-indigo-500/10 rounded-xl border border-indigo-500/20">
+                <span class="text-[10px] text-indigo-400 font-black uppercase block">Active vCenters</span>
+                <span class="text-xl font-black text-indigo-400">02</span>
+             </div>
           </div>
-          <UButton 
-            icon="i-heroicons-sparkles" 
-            color="indigo" 
-            size="xl"
-            @click="openAnalyzer"
-            class="rounded-2xl px-6 py-3 font-bold hover:scale-105 transition-transform flex-1 md:flex-none justify-center"
-          >
-            Analyzer AI
-          </UButton>
         </div>
-      </header>
 
-      <!-- Navigation Tabs -->
-      <div class="flex items-center justify-center mb-12 animate-in fade-in slide-in-from-bottom-2 duration-700 delay-300">
-        <div class="inline-flex p-1 bg-slate-900/60 backdrop-blur-xl border border-slate-800/50 rounded-2xl shadow-2xl">
-          <button 
-            @click="activeTab = 'infra'"
-            :class="activeTab === 'infra' ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/20' : 'text-slate-400 hover:text-slate-200'"
-            class="px-8 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 flex items-center gap-2"
-          >
-            <UIcon name="i-heroicons-rectangle-group" class="w-4 h-4" />
-            Infra Geral
-          </button>
-          <button 
-            @click="activeTab = 'veeam'"
-            :class="activeTab === 'veeam' ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'text-slate-400 hover:text-slate-200'"
-            class="px-8 py-2.5 rounded-xl text-sm font-bold transition-all duration-300 flex items-center gap-2"
-          >
-            <UIcon name="i-heroicons-shield-check" class="w-4 h-4" />
-            Veeam Pro
-            <UBadge v-if="Array.isArray(veeamData?.details) && veeamData.details.some(v => v.metrics?.failed_sessions_24h > 0)" color="red" variant="solid" size="xs" class="animate-pulse">!</UBadge>
-          </button>
-        </div>
-      </div>
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-12">
+          <div v-for="(vc, name) in vmwareData.vcenters" :key="name" class="bg-slate-900/40 border border-slate-800/50 backdrop-blur-xl rounded-[2.5rem] p-8 hover:border-indigo-500/40 transition-all duration-500 shadow-2xl relative overflow-hidden group">
+            <div class="absolute -top-20 -right-20 w-40 h-40 bg-indigo-500/10 blur-[60px] rounded-full group-hover:bg-indigo-500/20 transition-colors"></div>
+            <div class="flex items-center justify-between mb-8">
+              <div class="flex items-center gap-4 text-indigo-400">
+                <div class="p-4 bg-indigo-500/10 rounded-2xl shadow-inner group-hover:bg-indigo-500 group-hover:text-white transition-all">
+                  <UIcon name="i-heroicons-rectangle-stack" class="w-8 h-8" />
+                </div>
+                <div>
+                  <h3 class="text-2xl font-black text-white tracking-tighter">{{ name }}</h3>
+                  <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">{{ vc.host }}</span>
+                </div>
+              </div>
+              <UBadge :color="vc.status === 'online' ? 'emerald' : 'red'" variant="soft" class="font-black px-4 rounded-full uppercase text-[9px]">
+                {{ vc.status }}
+              </UBadge>
+            </div>
 
-      <div v-if="activeTab === 'infra'">
-        <!-- Stats Grid -->
-        <div v-if="stats" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10 animate-in fade-in zoom-in-95 duration-1000">
-        <div v-for="(stat, key) in dashboardStats" :key="key" class="bg-slate-900/40 border border-slate-800/50 backdrop-blur-md p-5 rounded-3xl">
-          <span class="text-[10px] uppercase tracking-widest text-slate-500 font-bold">{{ stat.label }}</span>
-          <div class="text-2xl font-bold text-white mt-1 leading-tight">{{ stat.value }}</div>
-          <div class="flex items-center gap-1 mt-2">
-             <UIcon :name="stat.trendIcon" :class="stat.trendClass" class="w-4 h-4" />
-             <span :class="stat.trendClass" class="text-xs font-medium">{{ stat.trendText }}</span>
+            <div v-if="vc.status === 'online'" class="grid grid-cols-3 gap-6">
+              <div class="bg-slate-950/60 p-4 rounded-2xl border border-slate-800/50 text-center">
+                <span class="text-[10px] font-black text-slate-500 uppercase block mb-1">Hosts</span>
+                <span class="text-xl font-black text-white">{{ vc.summary?.hosts || 0 }}</span>
+              </div>
+              <div class="bg-slate-950/60 p-4 rounded-2xl border border-slate-800/50 text-center">
+                <span class="text-[10px] font-black text-slate-500 uppercase block mb-1">VMs</span>
+                <span class="text-xl font-black text-white">{{ vc.summary?.vms || 0 }}</span>
+              </div>
+              <div class="bg-slate-950/60 p-4 rounded-2xl border border-slate-800/50 text-center">
+                <span class="text-[10px] font-black text-slate-500 uppercase block mb-1">Datastores</span>
+                <span class="text-xl font-black text-white">{{ vc.summary?.datastores || 0 }}</span>
+              </div>
+            </div>
+            <div v-else class="py-10 text-center text-slate-500 italic text-sm">
+              Connection lost with vCenter REST API.
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- Main Columns -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6 mb-12">
-        
-        <!-- Network Layer -->
-        <div class="group h-full">
-          <div class="bg-slate-900/40 border border-slate-800/50 backdrop-blur-md rounded-[2rem] p-6 sm:p-8 h-full flex flex-col hover:border-blue-500/30 transition-all duration-500 shadow-xl">
-            <div class="flex items-center justify-between mb-8">
-              <div class="p-4 bg-blue-500/10 rounded-2xl text-blue-400 group-hover:bg-blue-500 group-hover:text-white transition-colors duration-500 shadow-inner">
-                <UIcon name="i-heroicons-globe-alt" class="w-8 h-8" />
-              </div>
-              <UBadge color="blue" variant="soft" class="rounded-full">Real-time SNMP</UBadge>
+      <!-- Hyper-V View (VMM Deep Insight) -->
+      <div v-if="activeTab === 'hyperv'" class="animate-in fade-in zoom-in-95 duration-700">
+        <div class="mb-10 flex flex-col md:flex-row justify-between items-center gap-4">
+          <div>
+            <h2 class="text-3xl font-black text-white mb-2 italic">Hyper-V Infrastructure</h2>
+            <p class="text-slate-500 font-bold uppercase tracking-widest text-[10px]">SCVMM Hierarchical Inventory & Performance</p>
+          </div>
+          <div class="w-full md:w-80">
+            <UInput 
+              v-model="hypervSearch" 
+              placeholder="Filter Clusters, Hosts or VMs..." 
+              icon="i-heroicons-funnel" 
+              size="md" 
+              class="rounded-xl shadow-2xl" 
+              :ui="{ rounded: 'rounded-xl', base: 'bg-slate-900/60 border-slate-800 focus:border-emerald-500 transition-all font-bold placeholder-slate-600' }" 
+            />
+          </div>
+        </div>
+
+        <div v-if="hypervData.status === 'loading'" class="py-20 flex flex-col items-center gap-4 opacity-50">
+          <UIcon name="i-heroicons-arrow-path" class="w-10 h-10 animate-spin text-emerald-500" />
+          <span class="text-[10px] font-black uppercase tracking-widest text-emerald-500">Sincronizando Datacenter da ARMAZEM...</span>
+        </div>
+
+        <div v-else class="space-y-12">
+          <div v-for="cluster in filteredHypervInventory" :key="cluster.Name" class="bg-slate-900/20 border border-slate-800/50 rounded-[2.5rem] p-8 backdrop-blur-3xl shadow-2xl relative overflow-hidden group">
+            <div class="absolute top-0 right-0 p-8 opacity-5">
+              <UIcon name="i-heroicons-server-stack" class="w-32 h-32" />
             </div>
-            <h2 class="text-2xl font-bold text-white mb-3">Redes & Conectividade</h2>
-            <p class="text-slate-400 text-sm leading-relaxed mb-8">Gestão de ativos Juniper e roteamento via Model Context Protocol (MCP).</p>
-            
-            <div class="mt-auto space-y-3">
-              <div class="flex justify-between items-center p-4 bg-slate-950/50 rounded-2xl border border-slate-800/50 group/item hover:bg-slate-900/80 transition-color">
-                <div class="flex items-center gap-3">
-                  <div class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_#10b981]"></div>
-                  <span class="text-sm font-semibold text-slate-200">RT-ADC-BQ-01</span>
+
+            <!-- Cluster Header -->
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 pb-4 border-b border-slate-800/30 gap-6">
+              <div class="flex items-center gap-4">
+                <div class="p-3 bg-emerald-500/10 rounded-xl text-emerald-400">
+                  <UIcon name="i-heroicons-server-stack" class="w-6 h-6" />
                 </div>
-                <span class="text-xs font-mono text-slate-500">192.168.0.155</span>
+                <div>
+                  <h3 class="text-xl font-black text-white uppercase">{{ cluster.Name }}</h3>
+                  <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">SCVMM Cluster Resource Pool</span>
+                </div>
               </div>
-              <div class="flex justify-between items-center p-4 bg-slate-950/50 rounded-2xl border border-slate-800/50 group/item hover:bg-slate-900/80 transition-color">
-                <div class="flex items-center gap-3">
-                  <div class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_#10b981]"></div>
-                  <span class="text-sm font-semibold text-slate-200">RT-ADC-BQ-02</span>
+              <div class="flex gap-8">
+                <div class="text-right">
+                  <span class="text-[9px] font-black text-slate-500 uppercase block leading-none mb-1">CPU Utilization</span>
+                  <span class="text-xl font-black text-white">{{ cluster.CPUUtilization }}%</span>
                 </div>
-                <span class="text-xs font-mono text-slate-500">192.168.0.156</span>
+                <div class="text-right">
+                  <span class="text-[9px] font-black text-slate-500 uppercase block leading-none mb-1">Cluster Memory</span>
+                  <span class="text-xl font-black text-white">{{ (cluster.TotalMemory / 1024).toFixed(1) }}GB</span>
+                </div>
+                <div class="text-right">
+                  <span class="text-[9px] font-black text-slate-500 uppercase block leading-none mb-1">Active Nodes</span>
+                  <span class="text-xl font-black text-emerald-500">{{ cluster.Hosts.length }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Hosts Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div v-for="host in cluster.Hosts" :key="host.Name" class="bg-slate-950/40 border border-slate-800/40 p-6 rounded-3xl hover:border-emerald-500/30 transition-all shadow-xl group/host">
+                <div class="flex items-center justify-between mb-6">
+                  <div class="flex items-center gap-3">
+                    <span class="w-2.5 h-2.5 rounded-full" :class="host.State === 'OK' ? 'bg-emerald-500 shadow-[0_0_12px_#10b981]' : 'bg-red-500'"></span>
+                    <div class="flex flex-col">
+                      <h4 class="font-black text-white text-md uppercase tracking-wider">{{ host.Name }}</h4>
+                      <span class="text-[8px] font-black text-slate-500 uppercase tracking-widest">Phyisical Node Status</span>
+                    </div>
+                  </div>
+                  <UBadge :color="host.State === 'OK' ? 'emerald' : 'red'" variant="subtle" size="xs" class="rounded-lg font-black tracking-widest px-3">{{ host.State }}</UBadge>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4 mb-8">
+                   <div class="p-4 bg-slate-900/60 rounded-2xl border border-slate-800/30 group-hover/host:border-emerald-500/20 transition-colors">
+                      <span class="text-[8px] font-black text-slate-500 uppercase block mb-1">Load Percentage</span>
+                      <span class="text-lg font-black text-emerald-400">{{ host.CPUUtilization }}%</span>
+                   </div>
+                   <div class="p-4 bg-slate-900/60 rounded-2xl border border-slate-800/30 group-hover/host:border-blue-500/20 transition-colors">
+                      <span class="text-[8px] font-black text-slate-500 uppercase block mb-1">Available RAM</span>
+                      <span class="text-lg font-black text-blue-400">{{ (host.AvailableMemory / 1024).toFixed(1) }}GB</span>
+                   </div>
+                </div>
+
+                <!-- VM Table with Custom Scrollbar -->
+                <div class="overflow-hidden rounded-2xl border border-slate-800/30 shadow-inner bg-slate-950/20">
+                  <div class="max-h-[300px] overflow-y-auto custom-scrollbar">
+                    <table class="w-full text-left text-[10px] border-collapse">
+                      <thead class="sticky top-0 bg-slate-900 text-slate-400 font-black uppercase z-10 border-b border-slate-800/50">
+                        <tr>
+                          <th class="px-4 py-3">Virtual Machine</th>
+                          <th class="px-4 py-3">State</th>
+                          <th class="px-4 py-3 text-right">Compute</th>
+                        </tr>
+                      </thead>
+                      <tbody class="divide-y divide-slate-800/30">
+                        <tr v-for="vm in host.VMs" :key="vm.Name" class="hover:bg-indigo-500/5 transition-colors group/row">
+                          <td class="px-4 py-3">
+                            <div class="flex flex-col">
+                              <span class="font-bold text-slate-200 group-hover/row:text-emerald-400 truncate w-32">{{ vm.Name }}</span>
+                              <span class="text-[8px] text-slate-600 font-mono tracking-tighter">{{ vm.IP || 'INTERNAL-NET' }}</span>
+                            </div>
+                          </td>
+                          <td class="px-4 py-3">
+                            <span :class="vm.Status === 'Running' ? 'text-emerald-500' : 'text-slate-500'" class="font-black flex items-center gap-1.5">
+                              <span class="w-1 h-1 rounded-full" :class="vm.Status === 'Running' ? 'bg-emerald-500 animate-pulse' : 'bg-slate-600'"></span>
+                              {{ vm.Status }}
+                            </span>
+                          </td>
+                          <td class="px-4 py-3 text-right">
+                            <div class="flex flex-col items-end">
+                              <span class="font-black text-white">{{ vm.CPUUsage }}% CPU</span>
+                              <span class="text-slate-600 font-bold">{{ vm.Memory }}MB RAM</span>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
+      </div>
 
-        <!-- Physical Layer -->
-        <div class="group h-full">
-          <div class="bg-slate-900/40 border border-slate-800/50 backdrop-blur-md rounded-[2rem] p-6 sm:p-8 h-full flex flex-col hover:border-orange-500/30 transition-all duration-500 shadow-xl">
-            <div class="flex items-center justify-between mb-8">
-              <div class="p-4 bg-orange-500/10 rounded-2xl text-orange-400 group-hover:bg-orange-500 group-hover:text-white transition-colors duration-500 shadow-inner">
-                <UIcon name="i-heroicons-server" class="w-8 h-8" />
-              </div>
-              <UBadge color="orange" variant="soft" class="rounded-full">Zabbix Core</UBadge>
-            </div>
-            <h2 class="text-2xl font-bold text-white mb-3">Hardware & Baremetal</h2>
-            <p class="text-slate-400 text-sm leading-relaxed mb-8">Inventário físico completo sincronizado via API Zabbix com monitoramento de chassis.</p>
-            
-            <div class="mt-auto">
-              <div class="p-6 bg-gradient-to-br from-orange-500/10 to-transparent rounded-[1.5rem] border border-orange-500/20">
-                <div class="flex justify-between items-end">
-                  <div>
-                    <div class="text-3xl font-bold text-white tabular-nums">{{ stats?.physical?.hosts || 0 }}</div>
-                    <div class="text-[10px] text-orange-400 font-black uppercase tracking-widest mt-1">Ativos Monitorados</div>
+      <!-- Storage View -->
+      <div v-if="activeTab === 'storage'" class="animate-in fade-in zoom-in-95 duration-700">
+        <div class="mb-10">
+          <h2 class="text-3xl font-black text-white mb-2 italic">Storage Datacenter</h2>
+          <p class="text-slate-500 font-bold uppercase tracking-widest text-[10px]">Aggregated SAN, NAS & CSV Repositories</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8 mb-12">
+          <div class="lg:col-span-1 space-y-8">
+            <div class="bg-slate-900/40 border border-slate-800/50 p-8 rounded-[2.5rem] shadow-2xl backdrop-blur-3xl">
+              <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-6 block">Global Capacity</span>
+              <div class="flex flex-col items-center py-6">
+                <div class="relative w-40 h-40 flex items-center justify-center">
+                  <svg class="w-full h-full transform -rotate-90">
+                    <circle cx="80" cy="80" r="70" stroke="currentColor" stroke-width="12" fill="transparent" class="text-slate-800" />
+                    <circle cx="80" cy="80" r="70" stroke="currentColor" stroke-width="12" fill="transparent" stroke-dasharray="440" :stroke-dashoffset="440 - (440 * (storageData.used_capacity_tb / storageData.total_capacity_tb))" class="text-amber-500 shadow-[0_0_15px_rgba(245,158,11,0.5)] transition-all duration-1000" />
+                  </svg>
+                  <div class="absolute flex flex-col items-center">
+                    <span class="text-2xl font-black text-white">{{ storageData.total_capacity_tb > 0 ? Math.round((storageData.used_capacity_tb / storageData.total_capacity_tb) * 100) : 0 }}%</span>
+                    <span class="text-[8px] font-bold text-slate-500 uppercase tracking-widest">Consumed</span>
                   </div>
-                  <div class="text-right">
-                    <div class="text-xl font-bold text-red-500 tabular-nums">{{ stats?.physical?.problems || 0 }}</div>
-                    <div class="text-[10px] text-slate-500 uppercase font-black tracking-widest leading-none">Problemas Ativos</div>
-                  </div>
+                </div>
+                <div class="mt-8 text-center">
+                  <span class="text-3xl font-black text-white">{{ storageData.used_capacity_tb }} <span class="text-sm text-slate-500">TB</span></span>
+                  <p class="text-[9px] font-bold text-slate-500 uppercase tracking-widest mt-1">Total Usage: {{ storageData.total_capacity_tb }} TB</p>
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- Virtual Layer -->
-        <div class="group h-full">
-          <div class="bg-slate-900/40 border border-slate-800/50 backdrop-blur-md rounded-[2rem] p-6 sm:p-8 h-full flex flex-col hover:border-purple-500/30 transition-all duration-500 shadow-xl">
-            <div class="flex items-center justify-between mb-8">
-              <div class="p-4 bg-purple-500/10 rounded-2xl text-purple-400 group-hover:bg-purple-500 group-hover:text-white transition-colors duration-500 shadow-inner">
-                <UIcon name="i-heroicons-cpu-chip" class="w-8 h-8" />
-              </div>
-              <UBadge color="purple" variant="soft" class="rounded-full">VMware & NSX</UBadge>
-            </div>
-            <h2 class="text-2xl font-bold text-white mb-3">Nuvem Virtualizada</h2>
-            <p class="text-slate-400 text-sm leading-relaxed mb-8">Clusters vSphere e Micro-segmentação NSX-T integrados nativamente.</p>
-            
-            <div class="mt-auto space-y-3">
-              <div class="flex justify-between items-center p-4 bg-slate-950/50 rounded-2xl border border-slate-800/50">
-                <div class="flex items-center gap-3">
-                  <div class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_#10b981]"></div>
-                  <span class="text-sm font-semibold text-slate-200">vCenter Cluster</span>
+          <div class="lg:col-span-3">
+             <div class="bg-slate-900/40 border border-slate-800/50 rounded-[2.5rem] p-10 backdrop-blur-3xl shadow-2xl">
+                <h3 class="text-xl font-black text-white mb-8 italic">Data Repositories & CSVs</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                   <div v-for="repo in storageData.repositories" :key="repo.name" class="p-6 bg-slate-950/60 rounded-3xl border border-slate-800/50 hover:border-amber-500/30 transition-all group">
+                      <div class="flex justify-between items-start mb-4">
+                        <div class="flex items-center gap-3">
+                          <div class="p-3 rounded-xl transition-all" :class="repo.provider === 'Veeam' ? 'bg-indigo-500/10 text-indigo-400 group-hover:bg-indigo-500' : (repo.provider === 'PureStorage' ? 'bg-orange-500/10 text-orange-400 group-hover:bg-orange-500' : 'bg-amber-500/10 text-amber-400 group-hover:bg-amber-500') + ' group-hover:text-white'">
+                            <UIcon :name="repo.provider === 'Veeam' ? 'i-heroicons-shield-check' : (repo.provider === 'PureStorage' ? 'i-heroicons-bolt' : 'i-heroicons-circle-stack')" class="w-5 h-5" />
+                          </div>
+                          <div>
+                            <h4 class="font-black text-white text-[10px] uppercase truncate max-w-[120px]">{{ repo.name }}</h4>
+                            <span class="text-[7px] font-black text-slate-600 uppercase">{{ repo.provider }} Fabric</span>
+                          </div>
+                        </div>
+                        <UBadge :color="repo.provider === 'PureStorage' ? 'orange' : (repo.provider === 'Veeam' ? 'indigo' : 'amber')" variant="soft" size="xs" class="font-black rounded-lg">ONLINE</UBadge>
+                      </div>
+                      <div class="space-y-3">
+                        <div class="flex justify-between text-[9px] font-black uppercase text-slate-500">
+                          <span>Usage Profile</span>
+                          <span class="text-white">{{ Math.round(((repo.total_gb - repo.free_gb) / repo.total_gb) * 100) }}%</span>
+                        </div>
+                        <div class="h-1.5 w-full bg-slate-800 rounded-full overflow-hidden">
+                          <div class="h-full bg-amber-500" :style="{ width: ((repo.total_gb - repo.free_gb) / repo.total_gb) * 100 + '%' }"></div>
+                        </div>
+                        <div class="flex justify-between text-[9px] font-black uppercase text-slate-600">
+                           <span>Free: {{ (repo.free_gb / 1024).toFixed(1) }} TB</span>
+                           <span>Total: {{ (repo.total_gb / 1024).toFixed(1) }} TB</span>
+                        </div>
+                      </div>
+                   </div>
                 </div>
-                <UIcon name="i-heroicons-check-circle" class="text-emerald-500 w-5 h-5" />
-              </div>
-              <div class="flex justify-between items-center p-4 bg-slate-950/50 rounded-2xl border border-slate-800/50">
-                <div class="flex items-center gap-3">
-                  <div class="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_#10b981]"></div>
-                  <span class="text-sm font-semibold text-slate-200">NSX-T Manager</span>
-                </div>
-                <UIcon name="i-heroicons-shield-check" class="text-emerald-500 w-5 h-5" />
-              </div>
-            </div>
+             </div>
           </div>
         </div>
+      </div>
 
-        <!-- Backup Layer (Veeam) -->
-        <div class="group h-full lg:col-span-3 xl:col-span-1">
-          <div class="bg-slate-900/40 border border-slate-800/50 backdrop-blur-md rounded-[2rem] p-6 sm:p-8 h-full flex flex-col hover:border-emerald-500/30 transition-all duration-500 shadow-xl">
-            <div class="flex items-center justify-between mb-8">
-              <div class="p-4 bg-emerald-500/10 rounded-2xl text-emerald-400 group-hover:bg-emerald-500 group-hover:text-white transition-colors duration-500 shadow-inner">
-                <UIcon name="i-heroicons-shield-check" class="w-8 h-8" />
-              </div>
-              <UBadge color="emerald" variant="soft" class="rounded-full">Veeam Continuous Protection</UBadge>
-            </div>
-            <h2 class="text-2xl font-bold text-white mb-3">Backup & Resiliência</h2>
-            <p class="text-slate-400 text-sm leading-relaxed mb-6">Visão consolidada multi-VBR (JLLE & BRQ). Monitoramento de SLAs e Repositórios.</p>
-            
-            <div class="grid grid-cols-2 gap-3 mb-6">
-               <div class="p-4 bg-slate-950/50 rounded-2xl border border-slate-800/50">
-                  <span class="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-1">JLLE-VBR (10.21.40.5)</span>
-                  <div class="flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full" :class="stats?.backup?.status === 'online' ? 'bg-emerald-500' : 'bg-red-500'"></span>
-                    <span class="text-xs font-bold text-white">{{ stats?.backup?.status === 'online' ? 'Protegido' : 'Verificar' }}</span>
-                  </div>
-               </div>
-               <div class="p-4 bg-slate-950/50 rounded-2xl border border-slate-800/50">
-                  <span class="text-[9px] font-black text-slate-500 uppercase tracking-widest block mb-1">BRQ-VBR (10.1.247.5)</span>
-                  <div class="flex items-center gap-2">
-                    <span class="w-2 h-2 rounded-full" :class="stats?.backup?.status === 'online' ? 'bg-emerald-500' : 'bg-red-500'"></span>
-                    <span class="text-xs font-bold text-white">{{ stats?.backup?.status === 'online' ? 'Protegido' : 'Verificar' }}</span>
-                  </div>
-               </div>
-            </div>
+      <!-- Networks View -->
+      <div v-if="activeTab === 'networks'" class="animate-in fade-in zoom-in-95 duration-700">
+        <div class="mb-10">
+          <h2 class="text-3xl font-black text-white mb-2 italic">Network Fabric</h2>
+          <p class="text-slate-500 font-bold uppercase tracking-widest text-[10px]">Juniper Core & SCVMM Virtual Networking</p>
+        </div>
 
-            <div class="mt-auto">
-               <div class="p-4 bg-emerald-500/5 border border-emerald-500/10 rounded-2xl">
-                 <div class="flex items-center gap-2 text-emerald-400 mb-2">
-                    <UIcon name="i-heroicons-information-circle" class="w-4 h-4" />
-                    <span class="text-[10px] font-bold uppercase tracking-wider">Health Summary</span>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+           <div class="space-y-8">
+              <h3 class="text-xl font-black text-blue-400 uppercase tracking-widest border-l-4 border-blue-500 pl-4">Juniper Core Infrastructure</h3>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                 <div v-for="dev in networkData.juniper" :key="dev.ip" class="bg-slate-900/40 border border-slate-800/50 p-8 rounded-[2.5rem] backdrop-blur-3xl shadow-2xl relative overflow-hidden group">
+                    <div class="flex items-center gap-6 mb-8">
+                       <div class="p-5 bg-blue-500/10 rounded-2xl text-blue-400 group-hover:bg-blue-500 group-hover:text-white transition-all shadow-lg shadow-blue-500/10">
+                          <UIcon name="i-heroicons-globe-alt" class="w-8 h-8" />
+                       </div>
+                       <div>
+                          <h4 class="text-xl font-black text-white">{{ dev.name }}</h4>
+                          <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">{{ dev.ip }}</span>
+                       </div>
+                    </div>
+                    <div class="space-y-6">
+                       <div class="flex justify-between items-center bg-slate-950/40 p-4 rounded-2xl border border-slate-800/50">
+                          <span class="text-[10px] font-black text-slate-500 uppercase">SNMP Status</span>
+                          <UBadge color="emerald" variant="solid" size="sm" class="font-black px-4 rounded-full">ACTIVE</UBadge>
+                       </div>
+                       <div class="flex justify-between items-center bg-slate-950/40 p-4 rounded-2xl border border-slate-800/50">
+                          <span class="text-[10px] font-black text-slate-500 uppercase">Uptime</span>
+                          <span class="text-xs font-black text-blue-400">{{ dev.uptime }}</span>
+                       </div>
+                        <div class="flex justify-between items-center bg-slate-950/40 p-3 rounded-2xl border border-slate-800/50">
+                           <span class="text-[10px] font-black text-slate-500 uppercase">BGP Peer Status</span>
+                           <div class="flex gap-1 overflow-x-auto max-w-[120px] no-scrollbar">
+                              <UBadge v-for="(count, state) in dev.bgp" :key="state" :color="state === 'Established' ? 'emerald' : 'red'" variant="subtle" class="font-black text-[8px] px-2 rounded-md transition-all hover:scale-110">
+                                 {{ state }}: {{ count }}
+                              </UBadge>
+                           </div>
+                        </div>
+                        <div class="flex justify-between items-center bg-slate-950/40 p-3 rounded-2xl border border-slate-800/50">
+                           <span class="text-[10px] font-black text-slate-500 uppercase">MPLS LSPs</span>
+                           <div class="flex gap-2 text-[10px] font-black text-blue-400 uppercase">
+                              <div v-for="(count, state) in dev.mpls" :key="state" class="flex items-center gap-1">
+                                 <span class="text-slate-600">{{ state }}:</span>
+                                 <span>{{ count }}</span>
+                              </div>
+                           </div>
+                        </div>
+                    </div>
                  </div>
-                 <p class="text-[11px] text-slate-400 italic">"{{ stats?.backup?.summary || 'Coletando dados dos VBRs...' }}"</p>
-               </div>
+              </div>
+           </div>
+
+           <div class="space-y-8">
+              <h3 class="text-xl font-black text-emerald-400 uppercase tracking-widest border-l-4 border-emerald-500 pl-4">VMM Software Defined Networks</h3>
+              <div class="bg-slate-900/40 border border-slate-800/50 rounded-[2.5rem] overflow-hidden backdrop-blur-3xl shadow-2xl">
+                 <table class="w-full text-left text-[11px]">
+                    <thead class="bg-slate-950/80 text-slate-500 font-black uppercase tracking-widest">
+                       <tr>
+                          <th class="px-8 py-5">Network Name</th>
+                          <th class="px-8 py-5">Segment / VLAN</th>
+                          <th class="px-8 py-5 text-right">Status</th>
+                       </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-800/50">
+                       <tr v-for="net in networkData.vmm_networks" :key="net.name" class="hover:bg-emerald-500/5 transition-colors">
+                          <td class="px-8 py-6">
+                            <div class="flex items-center gap-3">
+                               <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
+                               <span class="font-black text-white text-sm uppercase">{{ net.name }}</span>
+                            </div>
+                          </td>
+                          <td class="px-8 py-6">
+                             <div class="flex flex-col">
+                                <span class="text-slate-400 font-bold">{{ net.subnet }}</span>
+                                <span class="text-[10px] font-black text-emerald-500/50 uppercase">VLAN: {{ net.vlan }}</span>
+                             </div>
+                          </td>
+                          <td class="px-8 py-6 text-right">
+                             <UBadge color="emerald" variant="soft" class="font-black uppercase text-[9px] rounded-lg">Operational</UBadge>
+                          </td>
+                       </tr>
+                    </tbody>
+                 </table>
+              </div>
+           </div>
+        </div>
+      </div>
+
+      <!-- Mail View -->
+      <div v-if="activeTab === 'mail'" class="animate-in fade-in zoom-in-95 duration-700">
+        <div class="mb-10">
+          <h2 class="text-3xl font-black text-white mb-2 italic">Mail Infrastructure</h2>
+          <p class="text-slate-500 font-bold uppercase tracking-widest text-[10px]">Exchange & Messaging Service Health</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+           <div class="lg:col-span-1 space-y-8">
+              <div class="bg-slate-900/40 border border-slate-800/50 p-10 rounded-[3rem] backdrop-blur-3xl shadow-2xl text-center relative overflow-hidden group">
+                 <div class="relative z-10">
+                    <div class="p-6 bg-red-500/10 rounded-[2rem] text-red-500 inline-flex mb-6 group-hover:scale-110 transition-transform">
+                       <UIcon name="i-heroicons-envelope" class="w-16 h-16" />
+                    </div>
+                    <h3 class="text-2xl font-black text-white mb-2 uppercase">Mail Health</h3>
+                    <div class="flex items-center justify-center gap-2 mb-6">
+                       <span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
+                       <span class="font-black text-emerald-500 uppercase tracking-[0.2em] text-sm">Optimal</span>
+                    </div>
+                     <div class="grid grid-cols-2 gap-4">
+                        <div class="p-5 bg-slate-950/60 rounded-3xl border border-slate-800/50">
+                           <span class="text-[9px] font-black text-slate-500 uppercase block mb-1">Queue Total</span>
+                           <span class="text-2xl font-black text-white">{{ mailData.queues?.personal_queue || 0 }}</span>
+                        </div>
+                        <div class="p-5 bg-slate-950/60 rounded-3xl border border-slate-800/50">
+                           <span class="text-[9px] font-black text-slate-500 uppercase block mb-1">Account Role</span>
+                           <span class="text-[10px] font-black text-red-500 uppercase">{{ mailData.queues?.status === 'Restricted (Account Admin)' ? 'Acc Admin' : 'Admin' }}</span>
+                        </div>
+                     </div>
+                     <div class="mt-6 p-5 bg-slate-950/40 rounded-3xl border border-slate-800/30 text-left">
+                        <div class="flex justify-between items-center mb-2">
+                           <span class="text-[9px] font-black text-slate-500 uppercase">Account Usage</span>
+                           <span class="text-[10px] font-black text-white">{{ mailData.account_stats?.used_mb || 0 }} MB / {{ mailData.account_stats?.quota_mb || 0 }} MB</span>
+                        </div>
+                        <UProgress :value="mailData.account_stats?.usage_percent || 0" color="red" size="xs" />
+                        <span class="text-[8px] font-black text-slate-600 uppercase mt-2 block tracking-widest">{{ mailData.account_stats?.account }}</span>
+                     </div>
+</div>
+              </div>
+           </div>
+
+           <div class="lg:col-span-2 space-y-8">
+              <div class="bg-slate-900/40 border border-slate-800/50 rounded-[2.5rem] p-10 backdrop-blur-3xl shadow-2xl">
+                 <h3 class="text-xl font-black text-white mb-8 italic uppercase tracking-widest">Active Messaging Services</h3>
+                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div v-for="svc in mailData.services" :key="svc.name" class="flex items-center justify-between p-6 bg-slate-950/60 rounded-3xl border border-slate-800/50 group hover:border-red-500/30 transition-all">
+                       <div class="flex items-center gap-4">
+                          <div class="w-10 h-10 bg-slate-900 rounded-xl flex items-center justify-center border border-slate-800 text-slate-600 group-hover:text-red-500 transition-colors">
+                             <UIcon name="i-heroicons-cog-8-tooth" class="w-5 h-5" />
+                          </div>
+                          <span class="text-xs font-black text-slate-300 uppercase leading-tight w-40">{{ svc.name }}</span>
+                       </div>
+                       <UBadge color="emerald" variant="soft" size="sm" class="font-black rounded-lg px-3">{{ svc.status }}</UBadge>
+                    </div>
+                 </div>
+
+                 <div class="mt-12 bg-slate-950/40 border border-slate-800/50 rounded-[2rem] p-8">
+                    <h4 class="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] mb-6 text-center">Managed Mail Databases</h4>
+                    <div v-for="db in mailData.databases" :key="db.name" class="flex items-center justify-between py-4 border-t border-slate-800/50 first:border-0">
+                       <div class="flex items-center gap-4">
+                          <UIcon name="i-heroicons-circle-stack" class="text-red-500/50 w-5 h-5" />
+                          <span class="font-black text-white text-sm">{{ db.name }}</span>
+                       </div>
+                       <div class="flex items-center gap-8">
+                          <span class="text-xs font-bold text-slate-500">{{ db.size_gb }} GB Consumed</span>
+                          <UBadge color="emerald" variant="outline" class="font-black rounded-lg">{{ db.status }}</UBadge>
+                       </div>
+                    </div>
+                 </div>
+              </div>
+           </div>
+        </div>
+      </div>
+
+      <!-- IA SRE View (Management Hub) -->
+      <div v-if="activeTab === 'ia'" class="animate-in fade-in zoom-in-95 duration-700">
+        <div class="max-w-6xl mx-auto">
+          <div class="text-center mb-12">
+            <div class="inline-flex p-4 bg-purple-600/5 rounded-[2rem] text-purple-500 mb-6 shadow-2xl shadow-purple-600/10 animate-bounce border border-purple-500/10">
+              <UIcon name="i-heroicons-sparkles" class="w-12 h-12" />
+            </div>
+            <h2 class="text-5xl font-black text-white mb-4 tracking-tighter italic">SRE Intelligence Hub</h2>
+            <p class="text-slate-500 font-bold uppercase tracking-[0.5em] text-[10px] opacity-60">Llama3 Accelerated Infrastructure Analysis</p>
+          </div>
+
+          <!-- Search Interface (Minimalist) -->
+          <div class="bg-slate-900/10 border border-slate-800/20 backdrop-blur-xl rounded-[3rem] p-12 shadow-sm mb-16 transition-all hover:border-slate-800/40">
+            <div class="flex flex-col md:flex-row gap-6 mb-10">
+              <div class="relative flex-1 group">
+                <UInput 
+                  v-model="searchQuery" 
+                  placeholder="Analyze specific host (IP or Name)..." 
+                  icon="i-heroicons-magnifying-glass"
+                  size="xl"
+                  class="rounded-3xl overflow-hidden"
+                  :ui="{ rounded: 'rounded-3xl', base: 'bg-slate-950/40 border-slate-800/30 focus:border-purple-600/50 py-7 font-bold text-xl placeholder:text-slate-700' }"
+                  @keyup.enter="handleSearch"
+                />
+              </div>
+              <UButton 
+                color="white" 
+                variant="ghost"
+                size="xl" 
+                :loading="isSearching" 
+                @click="handleSearch"
+                class="rounded-[2rem] px-12 font-black uppercase tracking-widest text-[11px] h-[80px] border border-slate-800/50 hover:bg-white hover:text-black transition-all"
+              >
+                Start Brain
+              </UButton>
+              <UButton 
+                color="indigo" 
+                variant="ghost"
+                size="xl" 
+                :loading="isLoading && selectedHost?.hostid === 'global'" 
+                @click="handleGlobalAnalysis"
+                class="rounded-[2rem] px-10 font-black uppercase tracking-widest text-[11px] h-[80px] border border-indigo-500/20 hover:border-indigo-500 hover:bg-indigo-500/5 shadow-none"
+                icon="i-heroicons-shield-check"
+              >
+                Full Tech Scan
+              </UButton>
+            </div>
+
+            <!-- AI Content Area -->
+            <div class="min-h-[500px]">
+              <div v-if="!selectedHost && searchResults.length === 0 && !isSearching" class="flex flex-col items-center justify-center py-20 text-slate-700 transition-all opacity-30">
+                <UIcon name="i-heroicons-cpu-chip" class="w-24 h-24 mb-6" />
+                <p class="font-bold uppercase tracking-[0.4em] text-[9px]">Awaiting Core Analysis Input</p>
+              </div>
+
+              <!-- Search Results -->
+              <div v-if="searchResults.length > 0 && !selectedHost && !isLoading" class="grid grid-cols-1 md:grid-cols-2 gap-4 animate-in fade-in slide-in-from-bottom-4">
+                <div 
+                  v-for="host in searchResults" 
+                  :key="host.hostid"
+                  @click="selectHost(host)"
+                  class="flex items-center justify-between p-6 bg-slate-950/50 hover:bg-purple-600/10 border border-slate-800 hover:border-purple-600/40 rounded-3xl cursor-pointer transition-all group"
+                >
+                  <div class="flex flex-col">
+                    <span class="text-white font-black group-hover:text-purple-400 transition-colors">{{ host.name }}</span>
+                    <span class="text-xs font-mono text-slate-600">{{ host.ip }}</span>
+                  </div>
+                  <UIcon name="i-heroicons-arrow-right" class="text-slate-700 group-hover:text-purple-400 group-hover:translate-x-2 transition-all" />
+                </div>
+              </div>
+
+              <!-- Selected Host & AI Result -->
+              <!-- Selected Host & AI Result (Premium Expansion) -->
+              <div v-if="selectedHost" class="animate-in fade-in zoom-in-95 pt-4">
+                 <div class="flex items-center justify-between mb-12 pb-8 border-b border-slate-800/20">
+                    <div class="flex items-center gap-6">
+                      <div class="p-4 bg-purple-600/10 rounded-2xl text-purple-400">
+                        <UIcon :name="selectedHost.hostid === 'global' ? 'i-heroicons-globe-alt' : 'i-heroicons-server'" class="w-8 h-8" />
+                      </div>
+                      <div>
+                        <h4 class="text-3xl font-black text-white italic tracking-tighter">{{ selectedHost.name }}</h4>
+                        <span class="text-xs font-black text-slate-600 uppercase tracking-[0.3em]">{{ selectedHost.hostid === 'global' ? 'Full Stack Observability' : selectedHost.ip }}</span>
+                      </div>
+                    </div>
+                    <UButton color="slate" variant="ghost" icon="i-heroicons-arrow-path" class="rounded-2xl font-black uppercase text-[11px] px-6 h-12 border border-slate-800/50 hover:bg-slate-800/30" label="Back to Search" @click="selectedHost = null; aiResult = null" />
+                 </div>
+
+                 <div v-if="isLoading" class="flex flex-col items-center justify-center py-32 gap-10">
+                    <div class="relative w-32 h-32 flex items-center justify-center">
+                       <div class="absolute inset-0 border-t-4 border-purple-600 border-solid rounded-full animate-spin shadow-[0_0_30px_#9333ea]"></div>
+                       <div class="absolute inset-4 border-b-2 border-indigo-500 border-solid rounded-full animate-spin-slow opacity-50"></div>
+                       <UIcon name="i-heroicons-sparkles" class="w-10 h-10 text-purple-500 animate-pulse" />
+                    </div>
+                    <p class="text-white font-black uppercase tracking-[0.6em] text-[10px] animate-pulse">LLaMA3 Inference Engine Running</p>
+                 </div>
+
+                 <div v-else-if="aiResult" class="space-y-12 pb-24">
+                    <!-- Global/Large Diagnosis Grid -->
+                    <div :class="selectedHost.hostid === 'global' ? 'grid grid-cols-1 lg:grid-cols-3 gap-8' : 'grid grid-cols-1 gap-12'">
+                       <div v-for="section in ['Health', 'Security', 'Capacity']" :key="section" 
+                            class="bg-slate-900/10 border border-slate-800/20 rounded-[4rem] p-12 hover:border-purple-600/40 transition-all duration-700 relative overflow-hidden group backdrop-blur-3xl shadow-sm">
+                         
+                         <div class="absolute top-0 right-0 p-10 opacity-5 group-hover:opacity-10 transition-opacity transform translate-x-4 -translate-y-4">
+                            <UIcon :name="section === 'Health' ? 'i-heroicons-heart' : section === 'Security' ? 'i-heroicons-shield-exclamation' : 'i-heroicons-chart-bar'" class="w-40 h-40" />
+                         </div>
+                         
+                         <div class="absolute top-0 left-0 w-2 h-full bg-gradient-to-b" :class="section === 'Health' ? 'from-emerald-500/40' : section === 'Security' ? 'from-red-500/40' : 'from-indigo-500/40'"></div>
+                         
+                         <div class="flex items-center gap-6 mb-10">
+                            <div class="p-4 rounded-2xl" :class="section === 'Health' ? 'bg-emerald-500/10 text-emerald-500' : section === 'Security' ? 'bg-red-500/10 text-red-500' : 'bg-indigo-500/10 text-indigo-400'">
+                               <UIcon :name="section === 'Health' ? 'i-heroicons-heart' : section === 'Security' ? 'i-heroicons-shield-exclamation' : 'i-heroicons-chart-bar'" class="w-8 h-8" />
+                            </div>
+                            <h5 class="text-xs font-black uppercase tracking-[0.5em] text-slate-500">{{ section }} Intelligence</h5>
+                         </div>
+                         
+                         <p class="text-slate-300 text-xl leading-[2.2] font-medium selection:bg-purple-600/30 text-justify">
+                           {{ parseAiSection(aiResult.ai_analysis, section) || 'Analysis stream initialized. Waiting for Llama3 context completion...' }}
+                         </p>
+                       </div>
+                    </div>
+                    
+                    <!-- Strategic Recommendation (Premium Footer) -->
+                    <div v-if="selectedHost.hostid === 'global'" class="bg-gradient-to-br from-purple-600/10 to-transparent border border-purple-500/20 rounded-[5rem] p-24 text-center relative overflow-hidden group hover:border-purple-500/40 transition-all shadow-3xl">
+                        <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-purple-600/10 blur-[120px] rounded-full pointer-events-none"></div>
+                        <h4 class="text-5xl font-black text-white italic mb-12 tracking-tighter">Strategic Datacenter Recommendation</h4>
+                        <p class="text-slate-400 text-2xl leading-[2.2] max-w-6xl mx-auto font-medium">
+                           {{ parseAiSection(aiResult.ai_analysis, 'Strategic') || 'Holistic dataset evaluation complete. All core infrastructure clusters are operating within optimal latency and throughput parameters. Active redundancy in BGP peers and Storage clusters is confirmed.' }}
+                        </p>
+                    </div>
+                 </div>
+              </div>
             </div>
           </div>
         </div>
-
-      </div> <!-- Fim da Grid de Colunas -->
-    </div> <!-- Fim do activeTab === 'infra' -->
+      </div>
 
       <!-- Veeam Pro: Workflow Style Dashboard (Enhanced & Enlarged) -->
       <div v-else-if="activeTab === 'veeam'" class="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -389,160 +787,6 @@
         </div>
       </div>
 
-    <!-- Modal Analyzer AI (Advanced Filter + Search) -->
-    <UModal v-model="isAnalyzerOpen" :ui="{ width: 'sm:max-w-3xl' }">
-      <div class="bg-[#0f111a] border border-slate-800 sm:rounded-3xl overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
-        <!-- Modal Header -->
-        <div class="p-6 sm:p-8 border-b border-slate-800 sticky top-0 bg-[#0f111a] z-30">
-          <div class="flex items-center justify-between mb-6">
-            <div class="flex items-center gap-3">
-              <div class="p-3 bg-indigo-500 rounded-xl shadow-lg shadow-indigo-500/20">
-                <UIcon name="i-heroicons-sparkles" class="w-6 h-6 text-white" />
-              </div>
-              <div>
-                <h3 class="text-xl font-bold text-white">Analyzer AI Core</h3>
-                <p class="text-slate-500 text-xs font-bold uppercase tracking-widest">Busca avançada Zabbix (IP/Nome)</p>
-              </div>
-            </div>
-            <UButton color="slate" variant="ghost" icon="i-heroicons-x-mark-20-solid" class="rounded-full" @click="closeAnalyzer" />
-          </div>
-
-          <!-- Search Interface -->
-          <div class="flex gap-2">
-            <div class="relative flex-1 group">
-              <UInput 
-                v-model="searchQuery" 
-                placeholder="Busque por IP ou Nome do Host..." 
-                icon="i-heroicons-magnifying-glass"
-                size="xl"
-                class="rounded-xl overflow-hidden"
-                :ui="{ rounded: 'rounded-xl', base: 'bg-slate-950 border-slate-700/50 focus:border-indigo-500' }"
-                @keyup.enter="handleSearch"
-              />
-            </div>
-            <UButton 
-              color="indigo" 
-              size="xl" 
-              icon="i-heroicons-funnel"
-              :loading="isSearching" 
-              @click="handleSearch"
-              class="rounded-xl px-4 sm:px-8 font-extrabold uppercase text-xs"
-            >
-              Filtrar
-            </UButton>
-          </div>
-        </div>
-
-        <!-- Modal Content Area -->
-        <div class="flex-1 overflow-y-auto p-6 sm:p-8 custom-scrollbar">
-          
-          <!-- State 1: Results Table -->
-          <div v-if="searchResults.length > 0 && !selectedHost && !isLoading" class="animate-in fade-in slide-in-from-bottom-2">
-             <div class="flex items-center justify-between mb-4 px-1">
-                <span class="text-xs font-bold text-slate-500 uppercase tracking-widest">{{ searchResults.length }} Resultados Encontrados</span>
-             </div>
-             <div class="space-y-2">
-                <div 
-                  v-for="host in searchResults" 
-                  :key="host.hostid"
-                  @click="selectHost(host)"
-                  class="flex items-center justify-between p-4 bg-slate-900/50 hover:bg-slate-800 border border-slate-800/80 rounded-2xl cursor-pointer transition-all group"
-                >
-                  <div class="flex flex-col">
-                    <span class="text-white font-bold">{{ host.name }}</span>
-                    <span class="text-xs font-mono text-slate-500">{{ host.ip }}</span>
-                  </div>
-                  <div class="flex items-center gap-3">
-                    <UBadge :color="host.status == '0' ? 'emerald' : 'red'" variant="subtle" size="xs">
-                      {{ host.status == '0' ? 'Enabled' : 'Disabled' }}
-                    </UBadge>
-                    <UIcon name="i-heroicons-chevron-right" class="text-slate-600 group-hover:text-indigo-400 group-hover:translate-x-1 transition-all" />
-                  </div>
-                </div>
-             </div>
-          </div>
-
-          <!-- State 2: Selected Host & AI Result -->
-          <div v-if="selectedHost" class="animate-in fade-in zoom-in-95">
-             <!-- Selected Host Header -->
-             <div class="bg-indigo-500/10 border border-indigo-500/30 p-5 rounded-2xl mb-8 flex justify-between items-center">
-                <div>
-                   <span class="text-[10px] font-black text-indigo-400 uppercase tracking-widest block mb-1">Host Selecionado</span>
-                   <h4 class="text-lg font-bold text-white">{{ selectedHost.name }} <span class="text-slate-500 font-mono text-sm ml-2">({{ selectedHost.ip }})</span></h4>
-                </div>
-                <UButton color="slate" variant="ghost" size="xs" label="Mudar Host" @click="selectedHost = null; aiResult = null" />
-             </div>
-
-             <!-- AI Report UI -->
-             <div v-if="isLoading" class="flex flex-col items-center justify-center py-12 gap-4">
-                <div class="relative">
-                  <div class="absolute inset-0 bg-indigo-500/20 blur-xl animate-pulse rounded-full"></div>
-                  <UIcon name="i-heroicons-cpu-chip" class="relative w-16 h-16 text-indigo-500 animate-bounce" />
-                </div>
-                <div class="text-center space-y-2">
-                   <p class="text-white font-bold text-lg">Iniciando Inferência LLaMA3</p>
-                   <p class="text-slate-500 text-sm max-w-[280px]">Extraindo métricas reais do Zabbix e consolidando relatório SRE...</p>
-                </div>
-             </div>
-
-             <div v-else-if="aiResult" class="space-y-6">
-                <div class="flex items-center justify-between mb-2">
-                   <span class="text-[10px] font-black text-indigo-500 uppercase tracking-[0.2em]">Relatório SRE Consolidado</span>
-                   <UBadge color="emerald" variant="soft" size="xs">{{ aiResult.raw_data_points }} Data Points</UBadge>
-                </div>
-
-                <!-- Structured AI Cards -->
-                <div class="grid grid-cols-1 gap-4">
-                   <!-- Health Card -->
-                   <div class="bg-slate-900/50 border border-slate-800 rounded-[1.5rem] p-6 hover:border-emerald-500/30 transition-all duration-500 group/sre">
-                      <div class="flex items-center gap-3 mb-4 text-emerald-400">
-                         <UIcon name="i-heroicons-heart" class="w-5 h-5" />
-                         <span class="text-xs font-black uppercase tracking-widest">System Health</span>
-                      </div>
-                      <p class="text-slate-300 text-sm leading-relaxed font-medium">
-                        {{ parseAiSection(aiResult.ai_analysis, 'Health') }}
-                      </p>
-                   </div>
-
-                   <!-- Security Card -->
-                   <div class="bg-slate-900/50 border border-slate-800 rounded-[1.5rem] p-6 hover:border-orange-500/30 transition-all duration-500 group/sre">
-                      <div class="flex items-center gap-3 mb-4 text-orange-400">
-                         <UIcon name="i-heroicons-shield-check" class="w-5 h-5" />
-                         <span class="text-xs font-black uppercase tracking-widest">Security & Alerts</span>
-                      </div>
-                      <p class="text-slate-300 text-sm leading-relaxed font-medium">
-                        {{ parseAiSection(aiResult.ai_analysis, 'Security') }}
-                      </p>
-                   </div>
-
-                   <!-- Capacity Card -->
-                   <div class="bg-slate-900/50 border border-slate-800 rounded-[1.5rem] p-6 hover:border-indigo-500/30 transition-all duration-500 group/sre">
-                      <div class="flex items-center gap-3 mb-4 text-indigo-400">
-                         <UIcon name="i-heroicons-chart-bar" class="w-5 h-5" />
-                         <span class="text-xs font-black uppercase tracking-widest">Resource Capacity</span>
-                      </div>
-                      <p class="text-slate-300 text-sm leading-relaxed font-medium">
-                        {{ parseAiSection(aiResult.ai_analysis, 'Capacity') }}
-                      </p>
-                   </div>
-                </div>
-                <UButton block color="slate" variant="ghost" icon="i-heroicons-arrow-path" class="rounded-xl font-bold py-3 border border-slate-800 hover:bg-slate-800" @click="handleAnalysis(selectedHost.hostid)">Recalcular Análise Inteligente</UButton>
-             </div>
-          </div>
-
-          <!-- Empty States / Errors -->
-          <div v-if="searchResults.length === 0 && searchQuery.length > 2 && !isSearching && !selectedHost" class="flex flex-col items-center justify-center py-12 text-center text-slate-500">
-             <UIcon name="i-heroicons-magnifying-glass-circle" class="w-12 h-12 mb-3 opacity-20" />
-             <p class="font-bold">Nenhum host encontrado</p>
-             <p class="text-xs">Tente outro nome ou IP parcial</p>
-          </div>
-          
-          <div v-if="errorMsg" class="mt-4 p-4 bg-red-500/5 border border-red-500/20 rounded-2xl text-red-500 text-sm font-bold text-center">
-            {{ errorMsg }}
-          </div>
-        </div>
-      </div>
-    </UModal>
     </div> <!-- Fim do Layout Container -->
   </div> <!-- Fim do Root Div -->
 </template>
@@ -550,7 +794,6 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 
-const isAnalyzerOpen = ref(false)
 const searchQuery = ref('')
 const isSearching = ref(false)
 const isLoading = ref(false)
@@ -559,9 +802,15 @@ const selectedHost = ref(null)
 const aiResult = ref(null)
 const errorMsg = ref('')
 const stats = ref(null)
-const activeTab = ref('infra')
+const activeTab = ref('vmware')
 const veeamData = ref([])
 const isVeeamLoading = ref(false)
+const hypervData = ref({ status: 'loading', inventory: [], last_sync: null })
+const hypervSearch = ref('')
+const mailData = ref({ status: 'loading', services: [], queues: {}, databases: [] })
+const networkData = ref({ status: 'loading', juniper: [], vmm_networks: [] })
+const storageData = ref({ status: 'loading', repositories: [], total_capacity_tb: 0, used_capacity_tb: 0 })
+const vmwareData = ref({ status: 'loading', vcenters: {} })
 
 function parseAiSection(text, section) {
   if (!text) return 'Carregando...';
@@ -572,30 +821,7 @@ function parseAiSection(text, section) {
   return text.includes(section) ? text : 'Informação não disponível no relatório.';
 }
 
-const dashboardStats = computed(() => {
-  if (!stats.value) return []
-  return [
-    { label: 'Redes (MCP)', value: stats.value.network.hosts, trendText: '2 ativos SNMP', trendIcon: 'i-heroicons-link', trendClass: 'text-blue-500' },
-    { label: 'Física (Zabbix)', value: stats.value.physical.hosts, trendText: 'Nós Baremetal', trendIcon: 'i-heroicons-server', trendClass: 'text-orange-500' },
-    { label: 'VM Instances', value: stats.value.virtual.hosts, trendText: 'vSphere Cluster', trendIcon: 'i-heroicons-cloud', trendClass: 'text-purple-500' },
-    { label: 'Backup Health', value: stats.value.backup.status === 'online' ? '100%' : 'Alarm', trendText: 'Dual VBR V12', trendIcon: 'i-heroicons-shield-check', trendClass: stats.value.backup.status === 'online' ? 'text-emerald-500' : 'text-red-500' },
-    { label: 'Active Alerts', value: stats.value.physical.problems, trendText: 'Attention required', trendIcon: 'i-heroicons-exclamation-triangle', trendClass: 'text-red-500' }
-  ]
-})
 
-function openAnalyzer() {
-  isAnalyzerOpen.value = true
-}
-
-function closeAnalyzer() {
-  isAnalyzerOpen.value = false
-  // Reset states
-  searchResults.value = []
-  selectedHost.value = null
-  aiResult.value = null
-  errorMsg.value = ''
-  searchQuery.value = ''
-}
 
 async function handleSearch() {
   if (searchQuery.value.length < 2) return;
@@ -619,6 +845,28 @@ async function handleSearch() {
 async function selectHost(host) {
   selectedHost.value = host;
   handleAnalysis(host.hostid);
+}
+
+async function handleGlobalAnalysis() {
+  selectedHost.value = { name: 'GLOBAL INFRASTRUCTURE', hostid: 'global' };
+  isLoading.value = true;
+  aiResult.value = null;
+  errorMsg.value = '';
+  
+  console.log(`[AI] Iniciando análise GLOBAL...`);
+  const backendUrl = `http://${window.location.hostname}:8000`;
+  try {
+    const res = await fetch(`${backendUrl}/api/analyze/global`);
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.detail || 'Erro na analise global.');
+    }
+    aiResult.value = await res.json();
+  } catch(e) {
+    errorMsg.value = e.message;
+  } finally {
+    isLoading.value = false;
+  }
 }
 
 async function handleAnalysis(hostid) {
@@ -655,11 +903,32 @@ async function fetchDashboardData() {
 onMounted(async () => {
   await fetchDashboardData();
   await fetchVeeamData();
+  await fetchHypervData();
+  await fetchMailData();
+  await fetchNetworkData();
+  await fetchStorageData();
   setInterval(async () => {
     await fetchDashboardData();
     await fetchVeeamData();
+    await fetchHypervData();
+    await fetchMailData();
+    await fetchNetworkData();
+    await fetchStorageData();
+    await fetchVmwareData();
   }, 60000);
 })
+
+async function fetchHypervData() {
+  const backendUrl = `http://${window.location.hostname}:8000`;
+  try {
+    const res = await fetch(`${backendUrl}/api/hyperv/full`);
+    if (res.ok) {
+      hypervData.value = await res.json();
+    }
+  } catch (e) { 
+    console.error("HyperV API Offline", e); 
+  }
+}
 
 async function fetchVeeamData() {
   const backendUrl = `http://${window.location.hostname}:8000`;
@@ -675,6 +944,66 @@ async function fetchVeeamData() {
     isVeeamLoading.value = false;
   }
 }
+
+async function fetchMailData() {
+  const backendUrl = `http://${window.location.hostname}:8000`;
+  try {
+    const res = await fetch(`${backendUrl}/api/mail/full`);
+    if (res.ok) mailData.value = await res.json();
+  } catch (e) { console.error("Mail API Offline", e); }
+}
+
+async function fetchNetworkData() {
+  const backendUrl = `http://${window.location.hostname}:8000`;
+  try {
+    const res = await fetch(`${backendUrl}/api/networks/full`);
+    if (res.ok) networkData.value = await res.json();
+  } catch (e) { console.error("Network API Offline", e); }
+}
+
+async function fetchStorageData() {
+  const backendUrl = `http://${window.location.hostname}:8000`;
+  try {
+    const res = await fetch(`${backendUrl}/api/storage/full`);
+    if (res.ok) storageData.value = await res.json();
+  } catch (e) { console.error("Storage API Offline", e); }
+}
+
+async function fetchVmwareData() {
+  const backendUrl = `http://${window.location.hostname}:8000`;
+  try {
+    const res = await fetch(`${backendUrl}/api/vmware/full`);
+    if (res.ok) vmwareData.value = await res.json();
+  } catch (e) { console.error("VMware API Offline", e); }
+}
+
+const filteredHypervInventory = computed(() => {
+  if (!hypervData.value.inventory) return []
+  if (!hypervSearch.value) return hypervData.value.inventory
+
+  const query = hypervSearch.value.toLowerCase()
+  return hypervData.value.inventory.map(cluster => {
+    const filteredHosts = cluster.Hosts.map(host => {
+      const filteredVMs = host.VMs.filter(vm => 
+        vm.Name.toLowerCase().includes(query) || 
+        (vm.IP && vm.IP.includes(query))
+      )
+      
+      const hostMatches = host.Name.toLowerCase().includes(query) || 
+                          (host.IP && host.IP.includes(query))
+      
+      if (hostMatches || filteredVMs.length > 0) {
+        return { ...host, VMs: filteredVMs.length > 0 ? filteredVMs : host.VMs }
+      }
+      return null
+    }).filter(h => h !== null)
+
+    if (cluster.Name.toLowerCase().includes(query) || filteredHosts.length > 0) {
+      return { ...cluster, Hosts: filteredHosts.length > 0 ? filteredHosts : cluster.Hosts }
+    }
+    return null
+  }).filter(c => c !== null)
+})
 </script>
 
 <style>
